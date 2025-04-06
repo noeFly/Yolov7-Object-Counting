@@ -7,20 +7,25 @@ import torch.nn.functional as F
 
 # SiLU https://arxiv.org/pdf/1606.08415.pdf ----------------------------------------------------------------------------
 class SiLU(nn.Module):  # export-friendly version of nn.SiLU()
+
     @staticmethod
     def forward(x):
         return x * torch.sigmoid(x)
 
 
 class Hardswish(nn.Module):  # export-friendly version of nn.Hardswish()
+
     @staticmethod
     def forward(x):
         # return x * F.hardsigmoid(x)  # for torchscript and CoreML
-        return x * F.hardtanh(x + 3, 0., 6.) / 6.  # for torchscript, CoreML and ONNX
+        return x * F.hardtanh(x + 3, 0.,
+                              6.) / 6.  # for torchscript, CoreML and ONNX
 
 
 class MemoryEfficientSwish(nn.Module):
+
     class F(torch.autograd.Function):
+
         @staticmethod
         def forward(ctx, x):
             ctx.save_for_backward(x)
@@ -38,13 +43,16 @@ class MemoryEfficientSwish(nn.Module):
 
 # Mish https://github.com/digantamisra98/Mish --------------------------------------------------------------------------
 class Mish(nn.Module):
+
     @staticmethod
     def forward(x):
         return x * F.softplus(x).tanh()
 
 
 class MemoryEfficientMish(nn.Module):
+
     class F(torch.autograd.Function):
+
         @staticmethod
         def forward(ctx, x):
             ctx.save_for_backward(x)
@@ -63,6 +71,7 @@ class MemoryEfficientMish(nn.Module):
 
 # FReLU https://arxiv.org/abs/2007.11824 -------------------------------------------------------------------------------
 class FReLU(nn.Module):
+
     def __init__(self, c1, k=3):  # ch_in, kernel
         super().__init__()
         self.conv = nn.Conv2d(c1, c1, k, 1, 1, groups=c1, bias=False)
