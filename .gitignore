@@ -1,0 +1,15 @@
+# python cache files
+__pycache__
+*.pyc
+
+# venv
+.venv
+
+# runtime files
+runs
+*.png
+*.jpg
+*.jpeg
+
+# YOLOv7 inference code
+*.pt
